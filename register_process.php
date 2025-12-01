@@ -9,15 +9,14 @@ require 'db.php';
 if (isset($_POST['username']) && isset($_POST['password'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $nickname = $_POST['nickname'] ?? '';
     $country = $_POST['country'] ?? '';
     $major = $_POST['major'] ?? '';
     $instagram_handle = $_POST['instagram_handle'] ?? '';
     $bio = $_POST['bio'] ?? '';
 
- // make sure required fields are not empty
- if (empty($username) || empty($password) || empty($nickname) || empty($country) || empty($major)) {
-    $_SESSION['error'] = "Username, password, nickname, country and major are required";
+    // make sure required fields are not empty
+    if (empty($username) || empty($password)) {
+        $_SESSION['error'] = "Username and password are required";
         header("Location: register.php");
         exit();
     }
@@ -25,9 +24,6 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     // Clear and sanitize all inputs
     $username = trim($username);
     $username = stripslashes($username);
-    
-    $nickname = trim($nickname);
-    $nickname = stripslashes($nickname);
     
     $country = trim($country);
     $country = stripslashes($country);
@@ -65,13 +61,13 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $pos_x = rand(50, 750);
     $pos_y = rand(50, 550);
 
-    $stmt = $conn->prepare("INSERT INTO users(username, password, nickname, bio, country, major, instagram_handle, avatar_color, pos_x, pos_y) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO users(username, password, bio, country, major, instagram_handle, avatar_color, pos_x, pos_y) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     if ($stmt === false) {
         die("Error fatal en SQL: " . $conn->error); 
     }
 
-    $stmt->bind_param("ssssssssii", $username, $hashed_password, $nickname, $bio, $country, $major, $instagram_handle, $avatar_color, $pos_x, $pos_y);
+    $stmt->bind_param("sssssssii", $username, $hashed_password, $bio, $country, $major, $instagram_handle, $avatar_color, $pos_x, $pos_y);
 
     if ($stmt->execute()) {
         $_SESSION['success'] = "User registered successfully";

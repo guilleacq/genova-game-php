@@ -11,10 +11,10 @@ require 'db.php';
 // Get current user info
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['logged_user'];
-$stmt = $conn->prepare("SELECT nickname, avatar_color FROM users WHERE id = ?");
+$stmt = $conn->prepare("SELECT avatar_color FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$stmt->bind_result($nickname, $avatar_color);
+$stmt->bind_result($avatar_color);
 $stmt->fetch();
 $stmt->close();
 ?>
@@ -33,7 +33,7 @@ $stmt->close();
         <div class="top-nav">
             <div class="nav-left">
                 <h1>🇮🇹 Genova Exchange Lobby</h1>
-                <span class="current-user">Playing as: <strong><?php echo htmlspecialchars($nickname, ENT_QUOTES, 'UTF-8'); ?></strong></span>
+                <span class="current-user">Playing as: <strong><?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></strong></span>
             </div>
             <div class="nav-right">
                 <button id="myProfileBtn" class="nav-btn">My Profile</button>
@@ -110,7 +110,6 @@ $stmt->close();
     <script>
         const currentUserId = <?php echo $user_id; ?>;
         const currentUsername = "<?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?>";
-        const currentNickname = "<?php echo htmlspecialchars($nickname, ENT_QUOTES, 'UTF-8'); ?>";
         const currentAvatarColor = "<?php echo htmlspecialchars($avatar_color, ENT_QUOTES, 'UTF-8'); ?>";
     </script>
     <script src="assets/game.js"></script>

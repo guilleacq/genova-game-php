@@ -10,10 +10,10 @@ require 'db.php';
 
 // Get current user data
 $user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT nickname, bio, country, major, instagram_handle, avatar_color FROM users WHERE id = ?");
+$stmt = $conn->prepare("SELECT bio, country, major, instagram_handle, avatar_color FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$stmt->bind_result($nickname, $bio, $country, $major, $instagram_handle, $avatar_color);
+$stmt->bind_result($bio, $country, $major, $instagram_handle, $avatar_color);
 $stmt->fetch();
 $stmt->close();
 ?>
@@ -120,11 +120,17 @@ $stmt->close();
         .back-link:hover {
             text-decoration: underline;
         }
+        .optional-note {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Edit Your Profile</h1>
+        <p class="optional-note">All fields are optional. Fill in what you'd like others to see.</p>
 
         <?php
         if (isset($_SESSION['error'])) {
@@ -138,11 +144,8 @@ $stmt->close();
         ?>
 
         <form action="update_profile_process.php" method="POST">
-            <label for="nickname">Nickname (Display Name):</label>
-            <input type="text" name="nickname" id="nickname" value="<?php echo htmlspecialchars($nickname, ENT_QUOTES, 'UTF-8'); ?>" required>
-
             <label for="country">Country of Origin:</label>
-            <select name="country" id="country" required>
+            <select name="country" id="country">
                 <option value="">Select your country</option>
                 <option value="Argentina" <?php echo $country === 'Argentina' ? 'selected' : ''; ?>>Argentina</option>
                 <option value="Brazil" <?php echo $country === 'Brazil' ? 'selected' : ''; ?>>Brazil</option>
@@ -155,16 +158,17 @@ $stmt->close();
                 <option value="Spain" <?php echo $country === 'Spain' ? 'selected' : ''; ?>>Spain</option>
                 <option value="United Kingdom" <?php echo $country === 'United Kingdom' ? 'selected' : ''; ?>>United Kingdom</option>
                 <option value="United States" <?php echo $country === 'United States' ? 'selected' : ''; ?>>United States</option>
+                <option value="Uruguay" <?php echo $country === 'Uruguay' ? 'selected' : ''; ?>>Uruguay</option>
                 <option value="Other" <?php echo $country === 'Other' ? 'selected' : ''; ?>>Other</option>
             </select>
 
             <label for="major">What are you studying?</label>
-            <input type="text" name="major" id="major" value="<?php echo htmlspecialchars($major, ENT_QUOTES, 'UTF-8'); ?>" required>
+            <input type="text" name="major" id="major" value="<?php echo htmlspecialchars($major, ENT_QUOTES, 'UTF-8'); ?>">
 
-            <label for="instagram_handle">Instagram Handle (optional):</label>
+            <label for="instagram_handle">Instagram Handle:</label>
             <input type="text" name="instagram_handle" id="instagram_handle" value="<?php echo htmlspecialchars($instagram_handle, ENT_QUOTES, 'UTF-8'); ?>">
 
-            <label for="bio">Bio (optional):</label>
+            <label for="bio">Bio:</label>
             <textarea name="bio" id="bio" rows="4"><?php echo htmlspecialchars($bio, ENT_QUOTES, 'UTF-8'); ?></textarea>
 
             <label>Avatar Color:</label>

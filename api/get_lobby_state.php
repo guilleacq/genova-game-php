@@ -19,7 +19,7 @@ $stmt->close();
 
 // Get all active users (activity within last 30 seconds)
 $stmt = $conn->prepare("
-    SELECT id, username, nickname, pos_x, pos_y, avatar_color 
+    SELECT id, username, pos_x, pos_y, avatar_color 
     FROM users 
     WHERE last_activity >= DATE_SUB(NOW(), INTERVAL 30 SECOND)
 ");
@@ -31,7 +31,6 @@ while ($row = $result->fetch_assoc()) {
     $players[] = [
         'id' => (int)$row['id'],
         'username' => $row['username'],
-        'nickname' => $row['nickname'],
         'pos_x' => (int)$row['pos_x'],
         'pos_y' => (int)$row['pos_y'],
         'avatar_color' => $row['avatar_color']

@@ -24,6 +24,23 @@ session_start();
             border-radius: 4px;
             margin-bottom: 15px;
         }
+        .section-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+        }
+        .required-indicator {
+            color: #d9534f;
+        }
+        .optional-section {
+            color: #666;
+        }
+        .optional-label {
+            color: #888;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -41,23 +58,25 @@ session_start();
     ?>
 
     <form action="register_process.php" method="POST">
-        <label for="username">* Username:</label>
+        <!-- REQUIRED FIELDS -->
+        <div class="section-title"><span class="required-indicator">*</span> Required Fields</div>
+        
+        <label for="username">Username:</label>
         <input type="text" name="username" id="username" placeholder="ex: carlitos" required>
 
         <br> <br>
 
-        <label for="password">* Password:</label>
+        <label for="password">Password:</label>
         <input type="password" name="password" id="password" placeholder="******" required>
         
         <br> <br>
 
-        <label for="nickname">Nickname (Display Name):</label>
-        <input type="text" name="nickname" id="nickname" placeholder="How others will see you" required>
-
-        <br> <br>
+        <!-- OPTIONAL FIELDS -->
+        <div class="section-title optional-section">Optional Information</div>
+        <p class="optional-label">You can fill these later in your profile settings.</p>
 
         <label for="country">Country of Origin:</label>
-        <select name="country" id="country" required>
+        <select name="country" id="country">
             <option value="">Select your country</option>
             <option value="Argentina">Argentina</option>
             <option value="Brazil">Brazil</option>
@@ -77,16 +96,16 @@ session_start();
         <br> <br>
 
         <label for="major">What are you studying?</label>
-        <input type="text" name="major" id="major" placeholder="ex: Computer Science, Business, etc." required>
+        <input type="text" name="major" id="major" placeholder="ex: Computer Science, Business, etc.">
 
         <br> <br>
 
-        <label for="instagram_handle">Instagram Handle (optional):</label>
+        <label for="instagram_handle">Instagram Handle:</label>
         <input type="text" name="instagram_handle" id="instagram_handle" placeholder="ex: @yourhandle">
 
         <br> <br>
 
-        <label for="bio">Bio (optional):</label>
+        <label for="bio">Bio:</label>
         <textarea name="bio" id="bio" rows="3" placeholder="Tell us a bit about yourself..."></textarea>
         
         <br> <br>

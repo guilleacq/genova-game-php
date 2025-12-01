@@ -6,7 +6,6 @@ USE login_system;
 
 -- Expand the existing users table with new fields for the game
 ALTER TABLE users 
-ADD COLUMN nickname VARCHAR(50) NOT NULL DEFAULT '',
 ADD COLUMN bio TEXT,
 ADD COLUMN country VARCHAR(100) NOT NULL DEFAULT '',
 ADD COLUMN major VARCHAR(100) NOT NULL DEFAULT '',

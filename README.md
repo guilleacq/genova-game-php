@@ -71,7 +71,7 @@ If no image is provided, a gradient background will be used.
 
 ### Editing Profile
 - Click "My Profile" to view and edit your information
-- You can change your nickname, bio, country, major, Instagram handle, and avatar color
+- You can change your bio, country, major, Instagram handle, and avatar color
 
 ## Technical Details
 

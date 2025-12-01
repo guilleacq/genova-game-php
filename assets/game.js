@@ -170,7 +170,7 @@ function createPlayerElement(player) {
 
     const label = document.createElement('div');
     label.className = 'player-label';
-    label.textContent = player.nickname;
+    label.textContent = player.username;
     playerDiv.appendChild(label);
 
     // Click to view profile
@@ -240,16 +240,16 @@ function displayMessages(messages) {
         avatar.className = 'chat-avatar';
         avatar.style.backgroundColor = msg.avatar_color;
 
-        const nickname = document.createElement('span');
-        nickname.className = 'chat-nickname';
-        nickname.textContent = msg.nickname;
+        const usernameSpan = document.createElement('span');
+        usernameSpan.className = 'chat-username';
+        usernameSpan.textContent = msg.username;
 
         const timestamp = document.createElement('span');
         timestamp.className = 'chat-timestamp';
         timestamp.textContent = formatTime(msg.timestamp);
 
         headerDiv.appendChild(avatar);
-        headerDiv.appendChild(nickname);
+        headerDiv.appendChild(usernameSpan);
         headerDiv.appendChild(timestamp);
 
         const textDiv = document.createElement('div');
@@ -334,19 +334,22 @@ function displayProfile(data) {
         <div class="profile-header">
             <div class="profile-avatar" style="background-color: ${user.avatar_color};"></div>
             <div class="profile-name">
-                <h2>${escapeHtml(user.nickname)}</h2>
-                <p class="profile-username">@${escapeHtml(user.username)}</p>
+                <h2>${escapeHtml(user.username)}</h2>
             </div>
         </div>
         <div class="profile-info">
-            <div class="profile-field">
-                <span class="profile-label">Country:</span>
-                <span class="profile-value">${escapeHtml(user.country)}</span>
-            </div>
-            <div class="profile-field">
-                <span class="profile-label">Studying:</span>
-                <span class="profile-value">${escapeHtml(user.major)}</span>
-            </div>
+            ${user.country ? `
+                <div class="profile-field">
+                    <span class="profile-label">Country:</span>
+                    <span class="profile-value">${escapeHtml(user.country)}</span>
+                </div>
+            ` : ''}
+            ${user.major ? `
+                <div class="profile-field">
+                    <span class="profile-label">Studying:</span>
+                    <span class="profile-value">${escapeHtml(user.major)}</span>
+                </div>
+            ` : ''}
             ${user.instagram_handle ? `
                 <div class="profile-field">
                     <span class="profile-label">Instagram:</span>
@@ -430,8 +433,7 @@ function displayFriendRequests(requests) {
         <div class="request-item">
             <div class="request-avatar" style="background-color: ${req.avatar_color};"></div>
             <div class="request-info">
-                <div class="request-name">${escapeHtml(req.nickname)}</div>
-                <div class="request-username">@${escapeHtml(req.username)}</div>
+                <div class="request-name">${escapeHtml(req.username)}</div>
             </div>
             <div class="request-actions">
                 <button class="btn btn-success btn-sm" onclick="respondToRequest(${req.id}, 'accept')">Accept</button>
@@ -499,10 +501,10 @@ function displayFriendsList(friends) {
             <div class="friend-avatar" style="background-color: ${friend.avatar_color};"></div>
             <div class="friend-info">
                 <div class="friend-name">
-                    ${escapeHtml(friend.nickname)}
+                    ${escapeHtml(friend.username)}
                     <span class="online-status ${friend.is_online ? 'online' : 'offline'}"></span>
                 </div>
-                <div class="friend-username">@${escapeHtml(friend.username)} • ${escapeHtml(friend.country)}</div>
+                <div class="friend-details">${friend.country ? escapeHtml(friend.country) : ''}</div>
             </div>
         </div>
     `).join('');

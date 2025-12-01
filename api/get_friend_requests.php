@@ -13,7 +13,7 @@ $user_id = $_SESSION['user_id'];
 
 // Get pending friend requests received by the current user
 $stmt = $conn->prepare("
-    SELECT fr.id, fr.sender_id, fr.created_at, u.username, u.nickname, u.avatar_color
+    SELECT fr.id, fr.sender_id, fr.created_at, u.username, u.avatar_color
     FROM friend_requests fr
     JOIN users u ON fr.sender_id = u.id
     WHERE fr.receiver_id = ? AND fr.status = 'pending'
@@ -29,7 +29,6 @@ while ($row = $result->fetch_assoc()) {
         'id' => (int)$row['id'],
         'sender_id' => (int)$row['sender_id'],
         'username' => $row['username'],
-        'nickname' => $row['nickname'],
         'avatar_color' => $row['avatar_color'],
         'created_at' => $row['created_at']
     ];
