@@ -1,0 +1,14 @@
+This is a placeholder file.
+
+To add a real background image of Piazza de Ferrari:
+1. Find or download an image of Piazza de Ferrari (800x600px recommended)
+2. Save it as "piazza-ferrari-bg.jpg" in this directory (remove .placeholder extension)
+3. The game will automatically use it as the lobby background
+
+If no image is provided, the game will use a gradient background (which still looks nice!).
+
+You can find images at:
+- Google Images: "Piazza de Ferrari Genova"
+- Unsplash: https://unsplash.com/s/photos/genova
+- Wikimedia Commons: https://commons.wikimedia.org/wiki/Category:Piazza_De_Ferrari
+

@@ -1,0 +1,77 @@
+═══════════════════════════════════════════════════════════════════════
+  GENOVA MINI-MMO - QUICK SETUP GUIDE
+═══════════════════════════════════════════════════════════════════════
+
+STEP 1: Start XAMPP
+-------------------
+- Open XAMPP Control Panel
+- Start Apache
+- Start MySQL
+- Both should show green "Running" status
+
+STEP 2: Create Database
+------------------------
+1. Go to: http://localhost/phpmyadmin
+2. Click "New" in the left sidebar
+3. Database name: login_system
+4. Click "Create"
+
+STEP 3: Import Database Schema
+-------------------------------
+1. Click on the "login_system" database (left sidebar)
+2. Click the "SQL" tab at the top
+3. Copy and paste the entire contents of database_schema.sql
+4. Click "Go" button at the bottom
+5. You should see green success messages
+
+STEP 4: Test the Application
+-----------------------------
+1. Open browser and go to: http://localhost/genova-game-php/
+2. Click "Sign up"
+3. Fill out the registration form with your info
+4. Log in with your credentials
+5. You should see the game lobby!
+
+OPTIONAL: Add Background Image
+-------------------------------
+1. Download an image of Piazza de Ferrari (Google Images)
+2. Resize to approximately 800x600 pixels
+3. Save as: assets/piazza-ferrari-bg.jpg
+4. Refresh the game - you'll see the image as background!
+
+TESTING WITH MULTIPLE USERS
+----------------------------
+To test the multiplayer features:
+1. Open the game in your main browser
+2. Open a "Private/Incognito" window
+3. Register a second user
+4. Log in with the second user
+5. Now you'll see both users in the lobby!
+6. Test chat, friend requests, etc.
+
+TROUBLESHOOTING
+---------------
+If you see errors:
+
+"Connection failed" or database errors:
+  → Make sure MySQL is running in XAMPP
+  → Check that database "login_system" exists
+  → Verify database_schema.sql was imported correctly
+
+"File not found" or blank page:
+  → Make sure Apache is running in XAMPP
+  → Check that the URL is correct: http://localhost/genova-game-php/
+
+Players not showing up:
+  → Open browser console (F12) and check for JavaScript errors
+  → Make sure both users have logged in recently (within 30 seconds)
+
+Chat not working:
+  → Check browser console for errors
+  → Verify the api/ folder exists and contains all files
+
+═══════════════════════════════════════════════════════════════════════
+For more details, see README.md
+Have fun connecting with exchange students! 🇮🇹
+═══════════════════════════════════════════════════════════════════════
+

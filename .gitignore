@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Environment files
+.env
+
+# User-uploaded content (if you add this feature later)
+uploads/
+
+# Logs
+*.log
+error_log
+
