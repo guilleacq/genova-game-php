@@ -3,17 +3,22 @@
 
 -- Use the login_system database
 USE login_system;
-
+ 
 -- Expand the existing users table with new fields for the game
-ALTER TABLE users 
-ADD COLUMN bio TEXT,
-ADD COLUMN country VARCHAR(100) NOT NULL DEFAULT '',
-ADD COLUMN major VARCHAR(100) NOT NULL DEFAULT '',
-ADD COLUMN instagram_handle VARCHAR(50),
-ADD COLUMN avatar_color VARCHAR(7) NOT NULL DEFAULT '#3498db',
-ADD COLUMN pos_x INT NOT NULL DEFAULT 400,
-ADD COLUMN pos_y INT NOT NULL DEFAULT 300,
-ADD COLUMN last_activity TIMESTAMP NULL DEFAULT NULL;
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    bio TEXT,
+    country VARCHAR(100) NOT NULL DEFAULT '',
+    major VARCHAR(100) NOT NULL DEFAULT '',
+    instagram_handle VARCHAR(50),
+    avatar_color VARCHAR(7) NOT NULL DEFAULT '#3498db',
+    pos_x INT NOT NULL DEFAULT 400,
+    pos_y INT NOT NULL DEFAULT 300,
+    last_activity TIMESTAMP NULL DEFAULT NULL
+    -- profile_picture_url VARCHAR(500),
+);
 
 -- Create friend_requests table
 CREATE TABLE IF NOT EXISTS friend_requests (
