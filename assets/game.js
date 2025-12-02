@@ -18,11 +18,13 @@ const onlineCount = document.getElementById('onlineCount');
 const profileModal = document.getElementById('profileModal');
 const friendRequestsModal = document.getElementById('friendRequestsModal');
 const friendsListModal = document.getElementById('friendsListModal');
+const leaderboardModal = document.getElementById('leaderboardModal');
 
 // Buttons
 const myProfileBtn = document.getElementById('myProfileBtn');
 const friendRequestsBtn = document.getElementById('friendRequestsBtn');
 const friendsListBtn = document.getElementById('friendsListBtn');
+const leaderboardBtn = document.getElementById('leaderboardBtn');
 const requestCount = document.getElementById('requestCount');
 
 // Initialize game
@@ -44,6 +46,7 @@ function initializeGame() {
     myProfileBtn.addEventListener('click', () => showUserProfile(currentUserId));
     friendRequestsBtn.addEventListener('click', showFriendRequests);
     friendsListBtn.addEventListener('click', showFriendsList);
+    leaderboardBtn.addEventListener('click', showLeaderboard);
 
     // Close modals when clicking X or outside
     setupModalClosing();
@@ -422,7 +425,7 @@ function displayProfile(data) {
     if (data.is_current_user) {
         actionsHTML = `
             <div class="profile-actions">
-                <a href="edit_profile.php" class="btn btn-primary">Edit My Profile</a>
+                <a href="edit_profile_form.php" class="btn btn-primary">Edit My Profile</a>
             </div>
         `;
     } else {
@@ -643,6 +646,53 @@ function displayFriendsList(friends) {
                     <span class="online-status ${friend.is_online ? 'online' : 'offline'}"></span>
                 </div>
                 <div class="friend-details">${friend.country ? escapeHtml(friend.country) : ''}</div>
+            </div>
+        </div>
+    `}).join('');
+}
+
+function showLeaderboard() {
+    fetch('api/get_leaderboard.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayLeaderboard(data.leaderboard);
+                leaderboardModal.style.display = 'block';
+            }
+        })
+        .catch(error => console.error('Error fetching leaderboard:', error));
+}
+
+function displayLeaderboard(leaderboard) {
+    const listContainer = document.getElementById('leaderboardList');
+
+    if (leaderboard.length === 0) {
+        listContainer.innerHTML = `
+            <div class="empty-state">
+                <p>No data available</p>
+            </div>
+        `;
+        return;
+    }
+
+    listContainer.innerHTML = leaderboard.map(entry => {
+        const profilePictureHTML = entry.profile_picture_url
+            ? `<img src="${escapeHtml(entry.profile_picture_url)}" alt="${escapeHtml(entry.username)}" class="avatar-img" onerror="this.style.display='none'">`
+            : '';
+
+        // Add trophy emojis for top 3
+        let rankDisplay = entry.rank.toString();
+        if (entry.rank === 1) rankDisplay = '🥇';
+        else if (entry.rank === 2) rankDisplay = '🥈';
+        else if (entry.rank === 3) rankDisplay = '🥉';
+
+        return `
+        <div class="leaderboard-item" onclick="showUserProfile(${entry.id}); leaderboardModal.style.display='none';" style="cursor: pointer;">
+            <div class="leaderboard-rank">${rankDisplay}</div>
+            <div class="leaderboard-avatar" style="background-color: ${entry.avatar_color};">${profilePictureHTML}</div>
+            <div class="leaderboard-info">
+                <div class="leaderboard-name">${escapeHtml(entry.username)}</div>
+                <div class="leaderboard-friends">${entry.friend_count} friend${entry.friend_count !== 1 ? 's' : ''}</div>
             </div>
         </div>
     `}).join('');

@@ -18,7 +18,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     // make sure required fields are not empty (Might be unnecessary)
     if (empty($username) || empty($password)) {
         $_SESSION['error'] = "Username and password are required";
-        header("Location: register.php");
+        header("Location: register_form.php");
         exit();
     }
 
@@ -40,10 +40,6 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     
     $profile_picture_url = trim($profile_picture_url);
     $profile_picture_url = stripslashes($profile_picture_url);
-    // Set to null if empty so database stores NULL instead of empty string
-    if (empty($profile_picture_url)) {
-        $profile_picture_url = null;
-    }
 
     // Verify if user already exists
     $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
@@ -53,7 +49,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 
     if ($stmt->num_rows > 0) {
         $_SESSION['error'] = "User already exists. Choose another one";
-        header('Location: register.php');
+        header('Location: register_form.php');
         exit();
     }
     $stmt->close();
@@ -61,9 +57,32 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     
-    // Generate random avatar color from predefined palette
-    $avatar_colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#34495e', '#e67e22', '#16a085', '#c0392b', '#8e44ad', '#27ae60', '#d35400', '#2980b9', '#7f8c8d'];
+    // Generate random avatar color from Mediterranean palette
+    $avatar_colors = [
+        '#C4694A', // Terracotta
+        '#D4A54A', // Gold
+        '#9CAF88', // Olive soft
+        '#8B5E3C', // Sienna
+        '#A85438', // Terracotta dark
+        '#7A8F68', // Olive dark
+        '#D4856B', // Terracotta light
+        '#B88888', // Rose dark
+        '#A69478', // Cappuccino
+        '#6B4A2F', // Sienna dark
+        '#5C4A3D', // Coffee
+        '#C9B896'  // Ochre
+    ];
     $avatar_color = $avatar_colors[array_rand($avatar_colors)];
+    
+    // If no profile picture provided, assign a random default avatar
+    if (empty($profile_picture_url)) {
+        $default_avatars = [
+            'https://i.imgur.com/IbOXVHy.jpeg',
+            'https://i.imgur.com/LEneITN.jpeg',
+            'https://i.imgur.com/n0aTIKs.jpeg'
+        ];
+        $profile_picture_url = $default_avatars[array_rand($default_avatars)];
+    }
     
     // Random initial position in lobby (within bounds: 50-750 x, 50-550 y)
     $pos_x = rand(50, 750);
@@ -79,10 +98,10 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 
     if ($stmt->execute()) {
         $_SESSION['success'] = "User registered successfully";
-        header('Location: index.php');
+        header('Location: login_form.php');
     } else {
         $_SESSION['error'] = "There's been an error with the database: " . $conn->error;
-        header('Location: register.php'); 
+        header('Location: register_form.php'); 
     }
 
 
@@ -90,6 +109,6 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $conn-> close();
     exit();
 } else {
-    header('Location: register.php');
+    header('Location: register_form.php');
     exit();
 }

@@ -36,7 +36,7 @@ OPTIONAL: Add Background Image
 -------------------------------
 1. Download an image of Piazza de Ferrari (Google Images)
 2. Resize to approximately 800x600 pixels
-3. Save as: assets/piazza-ferrari-bg.jpg
+3. Save as: assets/piazza-ferrari-bg.png
 4. Refresh the game - you'll see the image as background!
 
 TESTING WITH MULTIPLE USERS

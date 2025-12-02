@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['logged_user'])) {
-    header('Location: index.php');
+    header('Location: login_form.php');
     exit();
 }
 
@@ -33,7 +33,7 @@ $stmt->close();
         <div class="top-nav">
             <div class="nav-left">
                 <h1>🇮🇹 Genova Exchange Lobby</h1>
-                <span class="current-user">Playing as: <strong><?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></strong></span>
+                <!-- <span class="current-user">Playing as: <strong><?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></strong></span> -->
             </div>
             <div class="nav-right">
                 <button id="myProfileBtn" class="nav-btn">My Profile</button>
@@ -41,6 +41,7 @@ $stmt->close();
                     Friend Requests <span id="requestCount" class="badge">0</span>
                 </button>
                 <button id="friendsListBtn" class="nav-btn">Friends</button>
+                <button id="leaderboardBtn" class="nav-btn">Leaderboard</button>
                 <a href="logout.php" class="nav-btn logout-btn">Logout</a>
             </div>
         </div>
@@ -97,6 +98,17 @@ $stmt->close();
             <h2>My Friends</h2>
             <div id="friendsList">
                 <!-- Friends list will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>🏆 Top Friends Leaderboard</h2>
+            <div id="leaderboardList">
+                <!-- Leaderboard will be loaded here -->
             </div>
         </div>
     </div>

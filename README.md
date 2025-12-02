@@ -85,30 +85,32 @@ If no image is provided, a gradient background will be used.
 
 ```
 /genova-game-php/
-├── index.php                    # Login page
-├── register.php                 # Registration form
+├── index.php                    # Landing/home page
+├── login_form.php               # Login page
+├── login_process.php            # Login handler
+├── register_form.php            # Registration form
 ├── register_process.php         # Registration handler
-├── auth.php                     # Authentication handler
 ├── game.php                     # Main game lobby
-├── edit_profile.php            # Profile editing page
-├── update_profile_process.php  # Profile update handler
-├── logout.php                  # Logout handler
-├── db.php                      # Database connection
-├── database_schema.sql         # Database setup script
+├── edit_profile_form.php        # Profile editing page
+├── edit_profile_process.php     # Profile update handler
+├── logout.php                   # Logout handler
+├── db.php                       # Database connection
+├── database_schema.sql          # Database setup script
 ├── api/
-│   ├── get_lobby_state.php    # Returns active players
-│   ├── update_position.php    # Updates player position
-│   ├── get_user_info.php      # Returns user profile
-│   ├── send_message.php       # Sends chat message
-│   ├── get_messages.php       # Returns chat messages
+│   ├── get_lobby_state.php      # Returns active players
+│   ├── update_position.php      # Updates player position
+│   ├── get_user_info.php        # Returns user profile
+│   ├── send_message.php         # Sends chat message
+│   ├── get_messages.php         # Returns chat messages
 │   ├── send_friend_request.php
 │   ├── respond_friend_request.php
 │   ├── get_friend_requests.php
-│   └── get_friends.php
+│   ├── get_friends.php
+│   └── delete_account.php       # Account deletion handler
 └── assets/
-    ├── game.css               # Main stylesheet
-    ├── game.js                # Game logic
-    └── piazza-ferrari-bg.jpg  # (optional) Background image
+    ├── game.css                 # Main stylesheet
+    ├── game.js                  # Game logic
+    └── piazza-ferrari-bg.png    # Background image
 ```
 
 ### Polling System
@@ -132,7 +134,7 @@ This works well for up to 50-100 simultaneous users.
 
 ### Change Available Countries
 
-Edit `register.php` and `edit_profile.php` to add more countries to the dropdown.
+Edit `register_form.php` and `edit_profile_form.php` to add more countries to the dropdown.
 
 ### Change Avatar Colors
 
