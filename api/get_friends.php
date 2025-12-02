@@ -13,7 +13,7 @@ $user_id = $_SESSION['user_id'];
 
 // Get all friends of the current user
 $stmt = $conn->prepare("
-    SELECT u.id, u.username, u.avatar_color, u.country, u.major,
+    SELECT u.id, u.username, u.avatar_color, u.profile_picture_url, u.country, u.major,
            (u.last_activity >= DATE_SUB(NOW(), INTERVAL 30 SECOND)) as is_online
     FROM friendships f
     JOIN users u ON f.friend_id = u.id
@@ -30,6 +30,7 @@ while ($row = $result->fetch_assoc()) {
         'id' => (int)$row['id'],
         'username' => $row['username'],
         'avatar_color' => $row['avatar_color'],
+        'profile_picture_url' => $row['profile_picture_url'],
         'country' => $row['country'],
         'major' => $row['major'],
         'is_online' => (bool)$row['is_online']

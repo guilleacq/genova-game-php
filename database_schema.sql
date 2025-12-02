@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS users (
     avatar_color VARCHAR(7) NOT NULL DEFAULT '#3498db',
     pos_x INT NOT NULL DEFAULT 400,
     pos_y INT NOT NULL DEFAULT 300,
-    last_activity TIMESTAMP NULL DEFAULT NULL
-    -- profile_picture_url VARCHAR(500),
+    last_activity TIMESTAMP NULL DEFAULT NULL,
+    profile_picture_url VARCHAR(500) DEFAULT NULL
 );
 
 -- Create friend_requests table

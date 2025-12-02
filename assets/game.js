@@ -3,10 +3,12 @@
 // State management
 let players = {};
 let lastChatMessageId = 0;
+let isFirstChatLoad = true; // Skip showing bubbles on initial page load
 let isMoving = false;
+let messageBubbleTimeouts = {}; // Track active bubble timeouts per player
 
 // DOM Elements
-const lobbyArea = document.getElementById('lobbyArea');
+const lobbyContainer = document.querySelector('.lobby-container');
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const sendMessageBtn = document.getElementById('sendMessageBtn');
@@ -30,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initializeGame() {
     // Set up event listeners
-    lobbyArea.addEventListener('click', handleLobbyClick);
+    lobbyContainer.addEventListener('click', handleLobbyClick);
     sendMessageBtn.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -63,15 +65,11 @@ function handleLobbyClick(e) {
         return; // Don't move when clicking on a player
     }
 
-    const rect = lobbyArea.getBoundingClientRect();
+    const rect = lobbyContainer.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Clamp to bounds
-    const clampedX = Math.max(25, Math.min(775, x));
-    const clampedY = Math.max(25, Math.min(575, y));
-
-    movePlayer(clampedX, clampedY);
+    movePlayer(x, y);
 }
 
 function movePlayer(x, y) {
@@ -115,7 +113,9 @@ function updateLobbyState() {
         .then(data => {
             if (data.success) {
                 updatePlayers(data.players);
-                onlineCount.textContent = data.count;
+                if (onlineCount) {
+                    onlineCount.textContent = data.count;
+                }
             }
         })
         .catch(error => console.error('Error fetching lobby state:', error));
@@ -132,12 +132,40 @@ function updatePlayers(newPlayers) {
         if (!playerElement) {
             // Create new player element
             playerElement = createPlayerElement(player);
-            lobbyArea.appendChild(playerElement);
+            lobbyContainer.appendChild(playerElement);
         } else {
             // Update existing player position (if not current user or not moving)
             if (player.id !== currentUserId || !isMoving) {
                 playerElement.style.left = (player.pos_x - 25) + 'px';
                 playerElement.style.top = (player.pos_y - 25) + 'px';
+            }
+            
+            // Check if avatar color or profile picture changed
+            const oldPlayer = players[player.id];
+            if (oldPlayer && (oldPlayer.avatar_color !== player.avatar_color || oldPlayer.profile_picture_url !== player.profile_picture_url)) {
+                // Update background color
+                playerElement.style.backgroundColor = player.avatar_color;
+                
+                // Update profile picture
+                const existingImg = playerElement.querySelector('.player-avatar-img');
+                if (player.profile_picture_url) {
+                    if (existingImg) {
+                        existingImg.src = player.profile_picture_url;
+                    } else {
+                        const avatarImg = document.createElement('img');
+                        avatarImg.className = 'player-avatar-img';
+                        avatarImg.src = player.profile_picture_url;
+                        avatarImg.alt = player.username;
+                        avatarImg.onerror = function() {
+                            this.remove();
+                        };
+                        // Insert before the label
+                        playerElement.insertBefore(avatarImg, playerElement.firstChild);
+                    }
+                } else if (existingImg) {
+                    // Remove image if URL was cleared
+                    existingImg.remove();
+                }
             }
         }
         
@@ -166,6 +194,21 @@ function createPlayerElement(player) {
     
     if (player.id === currentUserId) {
         playerDiv.classList.add('current-user');
+    }
+
+    // Add profile picture if available
+    const profilePictureUrl = player.profile_picture_url || null;
+    
+    if (profilePictureUrl) {
+        const avatarImg = document.createElement('img');
+        avatarImg.className = 'player-avatar-img';
+        avatarImg.src = profilePictureUrl;
+        avatarImg.alt = player.username;
+        avatarImg.onerror = function() {
+            // If image fails to load, remove it and show color fallback
+            this.remove();
+        };
+        playerDiv.appendChild(avatarImg);
     }
 
     const label = document.createElement('div');
@@ -199,6 +242,9 @@ function sendMessage() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            // Show bubble above current user
+            showMessageBubble(currentUserId, message);
+            
             chatInput.value = '';
             // Immediately fetch new messages
             updateChatMessages();
@@ -214,10 +260,39 @@ function updateChatMessages() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // Check for new messages and show bubbles
+                checkForNewMessages(data.messages);
                 displayMessages(data.messages);
             }
         })
         .catch(error => console.error('Error fetching messages:', error));
+}
+
+function checkForNewMessages(messages) {
+    if (messages.length === 0) return;
+    
+    // On first load, just set the last message ID without showing bubbles
+    if (isFirstChatLoad) {
+        lastChatMessageId = Math.max(...messages.map(m => m.id));
+        isFirstChatLoad = false;
+        return;
+    }
+    
+    // Find new messages since last update
+    const newMessages = messages.filter(msg => msg.id > lastChatMessageId);
+    
+    newMessages.forEach(msg => {
+        // Show bubble for player if they're in the lobby and it's not the current user
+        // (current user already shows bubble immediately when sending)
+        if (msg.user_id !== currentUserId && players[msg.user_id]) {
+            showMessageBubble(msg.user_id, msg.message);
+        }
+    });
+    
+    // Update last message ID
+    if (messages.length > 0) {
+        lastChatMessageId = Math.max(...messages.map(m => m.id));
+    }
 }
 
 function displayMessages(messages) {
@@ -239,6 +314,20 @@ function displayMessages(messages) {
         const avatar = document.createElement('span');
         avatar.className = 'chat-avatar';
         avatar.style.backgroundColor = msg.avatar_color;
+
+        // Add profile picture if available
+        const profilePictureUrl = msg.profile_picture_url || null;
+        
+        if (profilePictureUrl) {
+            const avatarImg = document.createElement('img');
+            avatarImg.className = 'chat-avatar-img';
+            avatarImg.src = profilePictureUrl;
+            avatarImg.alt = msg.username;
+            avatarImg.onerror = function() {
+                this.remove();
+            };
+            avatar.appendChild(avatarImg);
+        }
 
         const usernameSpan = document.createElement('span');
         usernameSpan.className = 'chat-username';
@@ -271,6 +360,41 @@ function formatTime(timestamp) {
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
+}
+
+function showMessageBubble(userId, message) {
+    const playerElement = document.querySelector(`.player[data-user-id="${userId}"]`);
+    if (!playerElement) return;
+    
+    // Remove existing bubble if any
+    const existingBubble = playerElement.querySelector('.message-bubble');
+    if (existingBubble) {
+        existingBubble.remove();
+    }
+    
+    // Clear existing timeout for this player
+    if (messageBubbleTimeouts[userId]) {
+        clearTimeout(messageBubbleTimeouts[userId]);
+    }
+    
+    // Create new bubble
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    // Truncate to first 20 characters
+    const truncatedMessage = message.length > 20 ? message.substring(0, 20) + '...' : message;
+    bubble.textContent = truncatedMessage;
+    
+    playerElement.appendChild(bubble);
+    
+    // Auto-hide after 4 seconds
+    messageBubbleTimeouts[userId] = setTimeout(() => {
+        bubble.classList.add('fade-out');
+        setTimeout(() => {
+            if (bubble.parentElement) {
+                bubble.remove();
+            }
+        }, 500); // Wait for fade-out animation
+    }, 4000);
 }
 
 // ===== PROFILE MODAL =====
@@ -330,9 +454,13 @@ function displayProfile(data) {
         }
     }
 
+    const profilePictureHTML = user.profile_picture_url 
+        ? `<img src="${escapeHtml(user.profile_picture_url)}" alt="${escapeHtml(user.username)}" class="profile-avatar-img" onerror="this.style.display='none'">`
+        : '';
+
     profileContent.innerHTML = `
         <div class="profile-header">
-            <div class="profile-avatar" style="background-color: ${user.avatar_color};"></div>
+            <div class="profile-avatar" style="background-color: ${user.avatar_color};">${profilePictureHTML}</div>
             <div class="profile-name">
                 <h2>${escapeHtml(user.username)}</h2>
             </div>
@@ -429,9 +557,13 @@ function displayFriendRequests(requests) {
         return;
     }
 
-    listContainer.innerHTML = requests.map(req => `
+    listContainer.innerHTML = requests.map(req => {
+        const reqPictureHTML = req.profile_picture_url 
+            ? `<img src="${escapeHtml(req.profile_picture_url)}" alt="${escapeHtml(req.username)}" class="avatar-img" onerror="this.style.display='none'">`
+            : '';
+        return `
         <div class="request-item">
-            <div class="request-avatar" style="background-color: ${req.avatar_color};"></div>
+            <div class="request-avatar" style="background-color: ${req.avatar_color};">${reqPictureHTML}</div>
             <div class="request-info">
                 <div class="request-name">${escapeHtml(req.username)}</div>
             </div>
@@ -440,7 +572,7 @@ function displayFriendRequests(requests) {
                 <button class="btn btn-danger btn-sm" onclick="respondToRequest(${req.id}, 'reject')">Decline</button>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 function respondToRequest(requestId, action) {
@@ -496,9 +628,13 @@ function displayFriendsList(friends) {
         return;
     }
 
-    listContainer.innerHTML = friends.map(friend => `
+    listContainer.innerHTML = friends.map(friend => {
+        const friendPictureHTML = friend.profile_picture_url 
+            ? `<img src="${escapeHtml(friend.profile_picture_url)}" alt="${escapeHtml(friend.username)}" class="avatar-img" onerror="this.style.display='none'">`
+            : '';
+        return `
         <div class="friend-item" onclick="showUserProfile(${friend.id}); friendsListModal.style.display='none';" style="cursor: pointer;">
-            <div class="friend-avatar" style="background-color: ${friend.avatar_color};"></div>
+            <div class="friend-avatar" style="background-color: ${friend.avatar_color};">${friendPictureHTML}</div>
             <div class="friend-info">
                 <div class="friend-name">
                     ${escapeHtml(friend.username)}
@@ -507,7 +643,7 @@ function displayFriendsList(friends) {
                 <div class="friend-details">${friend.country ? escapeHtml(friend.country) : ''}</div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 // ===== MODAL MANAGEMENT =====

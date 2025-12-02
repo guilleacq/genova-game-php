@@ -10,10 +10,10 @@ require 'db.php';
 
 // Get current user data
 $user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT bio, country, major, instagram_handle, avatar_color FROM users WHERE id = ?");
+$stmt = $conn->prepare("SELECT bio, country, major, instagram_handle, avatar_color, profile_picture_url FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$stmt->bind_result($bio, $country, $major, $instagram_handle, $avatar_color);
+$stmt->bind_result($bio, $country, $major, $instagram_handle, $avatar_color, $profile_picture_url);
 $stmt->fetch();
 $stmt->close();
 ?>
@@ -125,6 +125,38 @@ $stmt->close();
             font-size: 0.9em;
             margin-bottom: 15px;
         }
+        .profile-picture-preview {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .preview-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .preview-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .preview-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .url-hint {
+            color: #888;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -171,6 +203,19 @@ $stmt->close();
             <label for="bio">Bio:</label>
             <textarea name="bio" id="bio" rows="4"><?php echo htmlspecialchars($bio, ENT_QUOTES, 'UTF-8'); ?></textarea>
 
+            <label for="profile_picture_url">Profile Picture URL:</label>
+            <input type="url" name="profile_picture_url" id="profile_picture_url" value="<?php echo htmlspecialchars($profile_picture_url ?? '', ENT_QUOTES, 'UTF-8'); ?>" placeholder="https://example.com/your-image.jpg">
+            <p class="url-hint">Paste a direct link to an image (e.g. from Imgur, Discord, etc.). Leave empty to use avatar color.</p>
+            
+            <div class="profile-picture-preview">
+                <div class="preview-circle" id="previewCircle" style="background-color: <?php echo htmlspecialchars($avatar_color, ENT_QUOTES, 'UTF-8'); ?>;">
+                    <?php if ($profile_picture_url): ?>
+                        <img src="<?php echo htmlspecialchars($profile_picture_url, ENT_QUOTES, 'UTF-8'); ?>" alt="Preview" id="previewImage">
+                    <?php endif; ?>
+                </div>
+                <span class="preview-label">Preview (how it will look in-game)</span>
+            </div>
+
             <label>Avatar Color:</label>
             <input type="hidden" name="avatar_color" id="avatar_color" value="<?php echo htmlspecialchars($avatar_color, ENT_QUOTES, 'UTF-8'); ?>">
             <div class="color-picker-container">
@@ -202,6 +247,7 @@ $stmt->close();
         const colorOptions = document.querySelectorAll('.color-option');
         const colorInput = document.getElementById('avatar_color');
         const currentColor = colorInput.value;
+        const previewCircle = document.getElementById('previewCircle');
 
         // Set initial selected color
         colorOptions.forEach(option => {
@@ -213,7 +259,34 @@ $stmt->close();
                 colorOptions.forEach(opt => opt.classList.remove('selected'));
                 this.classList.add('selected');
                 colorInput.value = this.dataset.color;
+                // Update preview circle background color
+                previewCircle.style.backgroundColor = this.dataset.color;
             });
+        });
+
+        // Profile picture URL preview
+        const profilePictureInput = document.getElementById('profile_picture_url');
+        
+        profilePictureInput.addEventListener('input', function() {
+            const url = this.value.trim();
+            let previewImage = document.getElementById('previewImage');
+            
+            if (url) {
+                if (!previewImage) {
+                    previewImage = document.createElement('img');
+                    previewImage.id = 'previewImage';
+                    previewImage.alt = 'Preview';
+                    previewCircle.appendChild(previewImage);
+                }
+                previewImage.src = url;
+                previewImage.onerror = function() {
+                    this.remove();
+                };
+            } else {
+                if (previewImage) {
+                    previewImage.remove();
+                }
+            }
         });
     </script>
 </body>
