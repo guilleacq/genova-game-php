@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['logged_user'])) {
-    header('Location: index.php');
+    header('Location: login_form.php');
     exit();
 }
 
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $major = $_POST['major'] ?? '';
     $instagram_handle = $_POST['instagram_handle'] ?? '';
     $bio = $_POST['bio'] ?? '';
-    $avatar_color = $_POST['avatar_color'] ?? '#3498db';
+    $avatar_color = $_POST['avatar_color'] ?? '#C4694A';
     $profile_picture_url = $_POST['profile_picture_url'] ?? '';
 
     // Sanitize inputs
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Validate color (must be a valid hex color)
     if (!preg_match('/^#[a-f0-9]{6}$/i', $avatar_color)) {
-        $avatar_color = '#3498db'; // Default color if invalid
+        $avatar_color = '#C4694A'; // Default terracotta color if invalid
     }
     
     // Sanitize profile picture URL
@@ -49,17 +49,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->execute()) {
         $_SESSION['success'] = "Profile updated successfully!";
-        header('Location: edit_profile.php');
+        header('Location: edit_profile_form.php');
     } else {
         $_SESSION['error'] = "There was an error updating your profile: " . $conn->error;
-        header('Location: edit_profile.php');
+        header('Location: edit_profile_form.php');
     }
 
     $stmt->close();
     $conn->close();
     exit();
 } else {
-    header('Location: edit_profile.php');
+    header('Location: edit_profile_form.php');
     exit();
 }
 

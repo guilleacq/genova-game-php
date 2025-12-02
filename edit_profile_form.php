@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['logged_user'])) {
-    header('Location: index.php');
+    header('Location: login_form.php');
     exit();
 }
 
@@ -23,7 +23,7 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile - Genova Game</title>
+    <title>Edit Profile - Genova Erasmus Lobby</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -542,7 +542,7 @@ $stmt->close();
             }
             ?>
 
-            <form action="update_profile_process.php" method="POST">
+            <form action="edit_profile_process.php" method="POST">
                 <div class="form-group">
                     <label for="country">Country of Origin</label>
                     <select name="country" id="country">
@@ -720,3 +720,4 @@ $stmt->close();
     </script>
 </body>
 </html>
+

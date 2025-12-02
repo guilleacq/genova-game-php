@@ -10,7 +10,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $username = trim($username);
     $username = stripslashes($username);
 
-    // Obtenemos el user y su password
+    // Get user and their password
     $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -21,7 +21,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         $stmt->bind_result($id, $db_password_hash);
         $stmt->fetch();
 
-        // Sucessful login
+        // Successful login
         if (password_verify($password, $db_password_hash)) {
             $_SESSION['logged_user'] = $username;
             $_SESSION['user_id'] = $id;
@@ -32,15 +32,18 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
             exit();
         } else {
             $_SESSION['error'] = "Invalid username or password";
-            header('Location: index.php'); // Wrong password
+            header('Location: login_form.php');
             exit();
         }
     } else {
         $_SESSION['error'] = "Invalid username or password";
-        header('Location: index.php'); // User not found
+        header('Location: login_form.php');
         exit();
     }
-}
 
-$stmt->close();
+    $stmt->close();
+} else {
+    header('Location: login_form.php');
+    exit();
+}
 

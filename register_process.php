@@ -18,7 +18,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     // make sure required fields are not empty (Might be unnecessary)
     if (empty($username) || empty($password)) {
         $_SESSION['error'] = "Username and password are required";
-        header("Location: register.php");
+        header("Location: register_form.php");
         exit();
     }
 
@@ -49,7 +49,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 
     if ($stmt->num_rows > 0) {
         $_SESSION['error'] = "User already exists. Choose another one";
-        header('Location: register.php');
+        header('Location: register_form.php');
         exit();
     }
     $stmt->close();
@@ -98,10 +98,10 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 
     if ($stmt->execute()) {
         $_SESSION['success'] = "User registered successfully";
-        header('Location: index.php');
+        header('Location: login_form.php');
     } else {
         $_SESSION['error'] = "There's been an error with the database: " . $conn->error;
-        header('Location: register.php'); 
+        header('Location: register_form.php'); 
     }
 
 
@@ -109,6 +109,6 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $conn-> close();
     exit();
 } else {
-    header('Location: register.php');
+    header('Location: register_form.php');
     exit();
 }

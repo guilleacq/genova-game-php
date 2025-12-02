@@ -422,7 +422,7 @@ function displayProfile(data) {
     if (data.is_current_user) {
         actionsHTML = `
             <div class="profile-actions">
-                <a href="edit_profile.php" class="btn btn-primary">Edit My Profile</a>
+                <a href="edit_profile_form.php" class="btn btn-primary">Edit My Profile</a>
             </div>
         `;
     } else {

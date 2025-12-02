@@ -1,18 +1,24 @@
 <?php
 session_start();
+
+// If user is already logged in, redirect to game
+if (isset($_SESSION['logged_user'])) {
+    header('Location: game.php');
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Genova Game</title>
+    <title>Sign In - Genova Erasmus Lobby</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* ═══════════════════════════════════════════════════════════════════
-           GENOVA GAME - Registration Page
+           GENOVA GAME - Login Page
            Mediterranean Warmth Design
            ═══════════════════════════════════════════════════════════════════ */
         
@@ -29,7 +35,6 @@ session_start();
             --espresso: #3D2E25;
             --coffee: #5C4A3D;
             --latte: #8B7355;
-            --cappuccino: #A69478;
             --olive-soft: #9CAF88;
             --rose-soft: #D4A5A5;
             --font-display: 'Lora', Georgia, serif;
@@ -55,10 +60,11 @@ session_start();
             background: linear-gradient(135deg, var(--cream) 0%, var(--sand) 50%, var(--ochre-light) 100%);
             color: var(--espresso);
             line-height: 1.5;
-            padding: 40px 20px;
+            padding: 20px;
             position: relative;
         }
         
+        /* Decorative background pattern */
         body::before {
             content: '';
             position: fixed;
@@ -71,7 +77,7 @@ session_start();
         
         .container {
             width: 100%;
-            max-width: 480px;
+            max-width: 420px;
             animation: fadeSlideUp 0.6s ease-out;
         }
         
@@ -92,23 +98,22 @@ session_start();
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg);
             border: 1px solid var(--ochre-light);
-            position: relative;
         }
         
         .logo {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
         }
         
         .logo-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            margin-bottom: 12px;
             display: block;
         }
         
         h1 {
             font-family: var(--font-display);
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             font-weight: 600;
             color: var(--espresso);
             text-align: center;
@@ -120,7 +125,7 @@ session_start();
             text-align: center;
             color: var(--latte);
             font-size: 15px;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
         }
         
         .error {
@@ -159,100 +164,41 @@ session_start();
             font-size: 18px;
         }
         
-        /* Section Titles */
-        .section-title {
-            font-family: var(--font-display);
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--espresso);
-            margin: 28px 0 16px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--ochre-light);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .section-title:first-of-type {
-            margin-top: 0;
-        }
-        
-        .required-indicator {
-            color: var(--terracotta);
-        }
-        
-        .optional-section {
-            color: var(--coffee);
-        }
-        
-        .optional-label {
-            color: var(--latte);
-            font-size: 13px;
-            margin-bottom: 16px;
-            font-style: italic;
-        }
-        
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
         
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 600;
             color: var(--coffee);
             font-size: 14px;
         }
         
         input[type="text"],
-        input[type="password"],
-        input[type="url"],
-        select,
-        textarea {
+        input[type="password"] {
             width: 100%;
-            padding: 12px 14px;
+            padding: 14px 16px;
             border: 2px solid var(--ochre-light);
             border-radius: var(--radius-md);
             font-family: var(--font-body);
-            font-size: 14px;
+            font-size: 15px;
             background: white;
             color: var(--espresso);
             transition: all 0.2s ease;
         }
         
-        input::placeholder,
-        textarea::placeholder {
-            color: var(--cappuccino);
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: var(--latte);
         }
         
-        input:focus,
-        select:focus,
-        textarea:focus {
+        input[type="text"]:focus,
+        input[type="password"]:focus {
             outline: none;
             border-color: var(--terracotta);
             box-shadow: 0 0 0 4px rgba(196, 105, 74, 0.12);
-        }
-        
-        select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B7355' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-            padding-right: 40px;
-        }
-        
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-            font-family: var(--font-body);
-        }
-        
-        .hint {
-            color: var(--latte);
-            font-size: 12px;
-            margin-top: 6px;
-            font-style: italic;
         }
         
         input[type="submit"] {
@@ -267,7 +213,7 @@ session_start();
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            margin-top: 12px;
+            margin-top: 8px;
         }
         
         input[type="submit"]:hover {
@@ -301,17 +247,36 @@ session_start();
             text-decoration: underline;
         }
         
-        /* Two column layout for optional fields on larger screens */
-        @media (min-width: 500px) {
-            .two-col {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 16px;
-            }
-            
-            .two-col .form-group {
-                margin-bottom: 0;
-            }
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            color: var(--latte);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+        
+        .back-home:hover {
+            color: var(--coffee);
+        }
+        
+        /* Decorative corner flourish */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(196, 105, 74, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .card {
+            position: relative;
+            overflow: visible;
         }
     </style>
 </head>
@@ -320,8 +285,8 @@ session_start();
         <div class="card">
             <div class="logo">
                 <span class="logo-icon">🇮🇹</span>
-                <h1>Join Genova Game</h1>
-                <p class="subtitle">Create your account and start exploring</p>
+                <h1>Welcome Back</h1>
+                <p class="subtitle">Sign in to join Piazza Ferrari</p>
             </div>
 
             <?php
@@ -335,74 +300,27 @@ session_start();
             }
             ?>
 
-            <form action="register_process.php" method="POST">
-                <!-- REQUIRED FIELDS -->
-                <div class="section-title"><span class="required-indicator">✦</span> Account Details</div>
-                
+            <form action="login_process.php" method="POST">
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" name="username" id="username" placeholder="Choose a username" required>
+                    <input type="text" name="username" id="username" placeholder="Enter your username" required>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password" placeholder="Create a password" required>
+                    <input type="password" name="password" id="password" placeholder="Enter your password" required>
                 </div>
 
-                <!-- OPTIONAL FIELDS -->
-                <div class="section-title optional-section">✧ About You (Optional)</div>
-                <p class="optional-label">You can fill these later in your profile settings.</p>
-
-                <div class="two-col">
-                    <div class="form-group">
-                        <label for="country">Country of Origin</label>
-                        <select name="country" id="country">
-                            <option value="">Select your country</option>
-                            <option value="Argentina">Argentina</option>
-                            <option value="Brazil">Brazil</option>
-                            <option value="Chile">Chile</option>
-                            <option value="Colombia">Colombia</option>
-                            <option value="France">France</option>
-                            <option value="Germany">Germany</option>
-                            <option value="Italy">Italy</option>
-                            <option value="Mexico">Mexico</option>
-                            <option value="Spain">Spain</option>
-                            <option value="United Kingdom">United Kingdom</option>
-                            <option value="United States">United States</option>
-                            <option value="Uruguay">Uruguay</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="major">What are you studying?</label>
-                        <input type="text" name="major" id="major" placeholder="e.g. Computer Science">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="instagram_handle">Instagram Handle</label>
-                    <input type="text" name="instagram_handle" id="instagram_handle" placeholder="@yourhandle">
-                </div>
-
-                <div class="form-group">
-                    <label for="bio">Bio</label>
-                    <textarea name="bio" id="bio" rows="3" placeholder="Tell us a bit about yourself..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="profile_picture_url">Profile Picture URL</label>
-                    <input type="url" name="profile_picture_url" id="profile_picture_url" placeholder="https://example.com/your-image.jpg">
-                    <p class="hint">Paste a direct link to an image (e.g. from Imgur, Discord, etc.)</p>
-                </div>
-                
-                <input type="submit" value="Create Account">
+                <input type="submit" value="Sign In">
             </form>
 
             <p class="footer-text">
-                Already have an account? <a href="index.php">Sign in</a>
+                Don't have an account? <a href="register_form.php">Create one</a>
             </p>
         </div>
+        
+        <a href="index.php" class="back-home">← Back to home</a>
     </div>
 </body>
 </html>
+
