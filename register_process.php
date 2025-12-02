@@ -13,6 +13,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $major = $_POST['major'] ?? '';
     $instagram_handle = $_POST['instagram_handle'] ?? '';
     $bio = $_POST['bio'] ?? '';
+    $profile_picture_url = $_POST['profile_picture_url'] ?? '';
 
     // make sure required fields are not empty (Might be unnecessary)
     if (empty($username) || empty($password)) {
@@ -36,6 +37,13 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     
     $bio = trim($bio);
     $bio = stripslashes($bio);
+    
+    $profile_picture_url = trim($profile_picture_url);
+    $profile_picture_url = stripslashes($profile_picture_url);
+    // Set to null if empty so database stores NULL instead of empty string
+    if (empty($profile_picture_url)) {
+        $profile_picture_url = null;
+    }
 
     // Verify if user already exists
     $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
@@ -61,13 +69,13 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $pos_x = rand(50, 750);
     $pos_y = rand(50, 550);
 
-    $stmt = $conn->prepare("INSERT INTO users(username, password, bio, country, major, instagram_handle, avatar_color, pos_x, pos_y) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO users(username, password, bio, country, major, instagram_handle, avatar_color, pos_x, pos_y, profile_picture_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     if ($stmt === false) {
         die("Error fatal en SQL: " . $conn->error); 
     }
 
-    $stmt->bind_param("sssssssii", $username, $hashed_password, $bio, $country, $major, $instagram_handle, $avatar_color, $pos_x, $pos_y);
+    $stmt->bind_param("sssssssiis", $username, $hashed_password, $bio, $country, $major, $instagram_handle, $avatar_color, $pos_x, $pos_y, $profile_picture_url);
 
     if ($stmt->execute()) {
         $_SESSION['success'] = "User registered successfully";

@@ -167,6 +167,21 @@ function createPlayerElement(player) {
         playerDiv.classList.add('current-user');
     }
 
+    // Add profile picture if available
+    const profilePictureUrl = player.profile_picture_url || null;
+    
+    if (profilePictureUrl) {
+        const avatarImg = document.createElement('img');
+        avatarImg.className = 'player-avatar-img';
+        avatarImg.src = profilePictureUrl;
+        avatarImg.alt = player.username;
+        avatarImg.onerror = function() {
+            // If image fails to load, remove it and show color fallback
+            this.remove();
+        };
+        playerDiv.appendChild(avatarImg);
+    }
+
     const label = document.createElement('div');
     label.className = 'player-label';
     label.textContent = player.username;
@@ -263,6 +278,20 @@ function displayMessages(messages) {
         const avatar = document.createElement('span');
         avatar.className = 'chat-avatar';
         avatar.style.backgroundColor = msg.avatar_color;
+
+        // Add profile picture if available
+        const profilePictureUrl = msg.profile_picture_url || null;
+        
+        if (profilePictureUrl) {
+            const avatarImg = document.createElement('img');
+            avatarImg.className = 'chat-avatar-img';
+            avatarImg.src = profilePictureUrl;
+            avatarImg.alt = msg.username;
+            avatarImg.onerror = function() {
+                this.remove();
+            };
+            avatar.appendChild(avatarImg);
+        }
 
         const usernameSpan = document.createElement('span');
         usernameSpan.className = 'chat-username';

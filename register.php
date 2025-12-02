@@ -107,6 +107,12 @@ session_start();
 
         <label for="bio">Bio:</label>
         <textarea name="bio" id="bio" rows="3" placeholder="Tell us a bit about yourself..."></textarea>
+
+        <br> <br>
+
+        <label for="profile_picture_url">Profile Picture URL:</label>
+        <input type="url" name="profile_picture_url" id="profile_picture_url" placeholder="https://example.com/your-image.jpg">
+        <p class="optional-label">Paste a direct link to an image (e.g. from Imgur, Discord, etc.)</p>
         
         <br> <br>
         <input type="submit" value="Sign up">

@@ -11,7 +11,7 @@ require '../db.php';
 
 // Get the last 50 messages
 $stmt = $conn->prepare("
-    SELECT cm.id, cm.user_id, cm.message, cm.created_at, u.username, u.avatar_color
+    SELECT cm.id, cm.user_id, cm.message, cm.created_at, u.username, u.avatar_color, u.profile_picture_url
     FROM chat_messages cm
     JOIN users u ON cm.user_id = u.id
     ORDER BY cm.created_at DESC
@@ -27,6 +27,7 @@ while ($row = $result->fetch_assoc()) {
         'user_id' => (int)$row['user_id'],
         'username' => $row['username'],
         'avatar_color' => $row['avatar_color'],
+        'profile_picture_url' => $row['profile_picture_url'],
         'message' => $row['message'],
         'timestamp' => $row['created_at']
     ];

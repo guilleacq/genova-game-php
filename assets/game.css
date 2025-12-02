@@ -122,6 +122,18 @@ body {
     z-index: 10;
 }
 
+/* Player Profile Picture */
+.player-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    clip-path: circle(50%);
+}
+
 .player-label {
     position: absolute;
     top: 55px;
@@ -252,6 +264,15 @@ body {
     height: 20px;
     border-radius: 50%;
     display: inline-block;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.chat-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .chat-username {

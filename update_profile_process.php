@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $instagram_handle = $_POST['instagram_handle'] ?? '';
     $bio = $_POST['bio'] ?? '';
     $avatar_color = $_POST['avatar_color'] ?? '#3498db';
+    $profile_picture_url = $_POST['profile_picture_url'] ?? '';
 
     // Sanitize inputs
     $country = trim($country);
@@ -33,10 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!preg_match('/^#[a-f0-9]{6}$/i', $avatar_color)) {
         $avatar_color = '#3498db'; // Default color if invalid
     }
+    
+    // Sanitize profile picture URL
+    $profile_picture_url = trim($profile_picture_url);
+    $profile_picture_url = stripslashes($profile_picture_url);
+    // Set to null if empty so database stores NULL instead of empty string
+    if (empty($profile_picture_url)) {
+        $profile_picture_url = null;
+    }
 
     // Update user profile
-    $stmt = $conn->prepare("UPDATE users SET bio = ?, country = ?, major = ?, instagram_handle = ?, avatar_color = ? WHERE id = ?");
-    $stmt->bind_param("sssssi", $bio, $country, $major, $instagram_handle, $avatar_color, $user_id);
+    $stmt = $conn->prepare("UPDATE users SET bio = ?, country = ?, major = ?, instagram_handle = ?, avatar_color = ?, profile_picture_url = ? WHERE id = ?");
+    $stmt->bind_param("ssssssi", $bio, $country, $major, $instagram_handle, $avatar_color, $profile_picture_url, $user_id);
 
     if ($stmt->execute()) {
         $_SESSION['success'] = "Profile updated successfully!";
