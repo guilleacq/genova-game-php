@@ -23,10 +23,6 @@ if ($pos_x === null || $pos_y === null) {
     exit();
 }
 
-// Validate position is within bounds (0-800 x, 0-600 y)
-$pos_x = max(0, min(800, $pos_x));
-$pos_y = max(0, min(600, $pos_y));
-
 // Update user position and last_activity
 $stmt = $conn->prepare("UPDATE users SET pos_x = ?, pos_y = ?, last_activity = NOW() WHERE id = ?");
 $stmt->bind_param("iii", $pos_x, $pos_y, $user_id);
