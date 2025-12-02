@@ -899,9 +899,88 @@ h1, h2, h3, h4, h5, h6 {
         padding: 8px 14px;
         font-size: 13px;
     }
+    
+    .top-nav h1 {
+        font-size: 1.25rem;
+    }
+    
+    .nav-right {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .nav-btn {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+<<<<<<< Updated upstream
+=======
+   Leaderboard Styles
+   ───────────────────────────────────────────────────────────────────────────── */
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--cream);
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    border: 1px solid var(--ochre-light);
+    transition: all var(--transition-fast);
+}
+
+.leaderboard-item:hover {
+    background: var(--sand);
+    transform: translateX(4px);
+}
+
+.leaderboard-rank {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--terracotta);
+    min-width: 40px;
+    text-align: center;
+}
+
+.leaderboard-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid var(--terracotta-light);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+}
+
+.leaderboard-avatar .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.leaderboard-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.leaderboard-name {
+    font-weight: 600;
+    color: var(--terracotta);
+    margin-bottom: 4px;
+    font-size: 16px;
+}
+
+.leaderboard-friends {
+    font-size: 14px;
+    color: var(--latte);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+>>>>>>> Stashed changes
    Utility Classes
    ───────────────────────────────────────────────────────────────────────────── */
 .text-muted {
