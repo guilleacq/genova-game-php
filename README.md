@@ -108,7 +108,7 @@ If no image is provided, a gradient background will be used.
 └── assets/
     ├── game.css               # Main stylesheet
     ├── game.js                # Game logic
-    └── piazza-ferrari-bg.jpg  # (optional) Background image
+    └── piazza-ferrari-bg.png  # (optional) Background image
 ```
 
 ### Polling System
