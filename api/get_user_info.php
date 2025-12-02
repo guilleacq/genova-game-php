@@ -19,7 +19,7 @@ if (!$target_user_id) {
 
 // Get user profile information
 $stmt = $conn->prepare("
-    SELECT id, username, bio, country, major, instagram_handle, avatar_color 
+    SELECT id, username, bio, country, major, instagram_handle, avatar_color, profile_picture_url 
     FROM users 
     WHERE id = ?
 ");
@@ -84,7 +84,8 @@ echo json_encode([
         'country' => $user['country'],
         'major' => $user['major'],
         'instagram_handle' => $user['instagram_handle'],
-        'avatar_color' => $user['avatar_color']
+        'avatar_color' => $user['avatar_color'],
+        'profile_picture_url' => $user['profile_picture_url']
     ],
     'is_friend' => $is_friend,
     'friend_request_status' => $friend_request_status,

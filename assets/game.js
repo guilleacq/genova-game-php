@@ -138,6 +138,34 @@ function updatePlayers(newPlayers) {
                 playerElement.style.left = (player.pos_x - 25) + 'px';
                 playerElement.style.top = (player.pos_y - 25) + 'px';
             }
+            
+            // Check if avatar color or profile picture changed
+            const oldPlayer = players[player.id];
+            if (oldPlayer && (oldPlayer.avatar_color !== player.avatar_color || oldPlayer.profile_picture_url !== player.profile_picture_url)) {
+                // Update background color
+                playerElement.style.backgroundColor = player.avatar_color;
+                
+                // Update profile picture
+                const existingImg = playerElement.querySelector('.player-avatar-img');
+                if (player.profile_picture_url) {
+                    if (existingImg) {
+                        existingImg.src = player.profile_picture_url;
+                    } else {
+                        const avatarImg = document.createElement('img');
+                        avatarImg.className = 'player-avatar-img';
+                        avatarImg.src = player.profile_picture_url;
+                        avatarImg.alt = player.username;
+                        avatarImg.onerror = function() {
+                            this.remove();
+                        };
+                        // Insert before the label
+                        playerElement.insertBefore(avatarImg, playerElement.firstChild);
+                    }
+                } else if (existingImg) {
+                    // Remove image if URL was cleared
+                    existingImg.remove();
+                }
+            }
         }
         
         players[player.id] = player;
@@ -418,9 +446,13 @@ function displayProfile(data) {
         }
     }
 
+    const profilePictureHTML = user.profile_picture_url 
+        ? `<img src="${escapeHtml(user.profile_picture_url)}" alt="${escapeHtml(user.username)}" class="profile-avatar-img" onerror="this.style.display='none'">`
+        : '';
+
     profileContent.innerHTML = `
         <div class="profile-header">
-            <div class="profile-avatar" style="background-color: ${user.avatar_color};"></div>
+            <div class="profile-avatar" style="background-color: ${user.avatar_color};">${profilePictureHTML}</div>
             <div class="profile-name">
                 <h2>${escapeHtml(user.username)}</h2>
             </div>
@@ -517,9 +549,13 @@ function displayFriendRequests(requests) {
         return;
     }
 
-    listContainer.innerHTML = requests.map(req => `
+    listContainer.innerHTML = requests.map(req => {
+        const reqPictureHTML = req.profile_picture_url 
+            ? `<img src="${escapeHtml(req.profile_picture_url)}" alt="${escapeHtml(req.username)}" class="avatar-img" onerror="this.style.display='none'">`
+            : '';
+        return `
         <div class="request-item">
-            <div class="request-avatar" style="background-color: ${req.avatar_color};"></div>
+            <div class="request-avatar" style="background-color: ${req.avatar_color};">${reqPictureHTML}</div>
             <div class="request-info">
                 <div class="request-name">${escapeHtml(req.username)}</div>
             </div>
@@ -528,7 +564,7 @@ function displayFriendRequests(requests) {
                 <button class="btn btn-danger btn-sm" onclick="respondToRequest(${req.id}, 'reject')">Decline</button>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 function respondToRequest(requestId, action) {
@@ -584,9 +620,13 @@ function displayFriendsList(friends) {
         return;
     }
 
-    listContainer.innerHTML = friends.map(friend => `
+    listContainer.innerHTML = friends.map(friend => {
+        const friendPictureHTML = friend.profile_picture_url 
+            ? `<img src="${escapeHtml(friend.profile_picture_url)}" alt="${escapeHtml(friend.username)}" class="avatar-img" onerror="this.style.display='none'">`
+            : '';
+        return `
         <div class="friend-item" onclick="showUserProfile(${friend.id}); friendsListModal.style.display='none';" style="cursor: pointer;">
-            <div class="friend-avatar" style="background-color: ${friend.avatar_color};"></div>
+            <div class="friend-avatar" style="background-color: ${friend.avatar_color};">${friendPictureHTML}</div>
             <div class="friend-info">
                 <div class="friend-name">
                     ${escapeHtml(friend.username)}
@@ -595,7 +635,7 @@ function displayFriendsList(friends) {
                 <div class="friend-details">${friend.country ? escapeHtml(friend.country) : ''}</div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 // ===== MODAL MANAGEMENT =====
