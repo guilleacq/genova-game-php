@@ -4,6 +4,7 @@
 let players = {};
 let lastChatMessageId = 0;
 let isMoving = false;
+let messageBubbleTimeouts = {}; // Track active bubble timeouts per player
 
 // DOM Elements
 const lobbyContainer = document.querySelector('.lobby-container');
@@ -197,6 +198,9 @@ function sendMessage() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            // Show bubble above current user
+            showMessageBubble(currentUserId, message);
+            
             chatInput.value = '';
             // Immediately fetch new messages
             updateChatMessages();
@@ -212,10 +216,32 @@ function updateChatMessages() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // Check for new messages and show bubbles
+                checkForNewMessages(data.messages);
                 displayMessages(data.messages);
             }
         })
         .catch(error => console.error('Error fetching messages:', error));
+}
+
+function checkForNewMessages(messages) {
+    if (messages.length === 0) return;
+    
+    // Find new messages since last update
+    const newMessages = messages.filter(msg => msg.id > lastChatMessageId);
+    
+    newMessages.forEach(msg => {
+        // Show bubble for player if they're in the lobby and it's not the current user
+        // (current user already shows bubble immediately when sending)
+        if (msg.user_id !== currentUserId && players[msg.user_id]) {
+            showMessageBubble(msg.user_id, msg.message);
+        }
+    });
+    
+    // Update last message ID
+    if (messages.length > 0) {
+        lastChatMessageId = Math.max(...messages.map(m => m.id));
+    }
 }
 
 function displayMessages(messages) {
@@ -269,6 +295,41 @@ function formatTime(timestamp) {
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
+}
+
+function showMessageBubble(userId, message) {
+    const playerElement = document.querySelector(`.player[data-user-id="${userId}"]`);
+    if (!playerElement) return;
+    
+    // Remove existing bubble if any
+    const existingBubble = playerElement.querySelector('.message-bubble');
+    if (existingBubble) {
+        existingBubble.remove();
+    }
+    
+    // Clear existing timeout for this player
+    if (messageBubbleTimeouts[userId]) {
+        clearTimeout(messageBubbleTimeouts[userId]);
+    }
+    
+    // Create new bubble
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    // Truncate to first 20 characters
+    const truncatedMessage = message.length > 20 ? message.substring(0, 20) + '...' : message;
+    bubble.textContent = truncatedMessage;
+    
+    playerElement.appendChild(bubble);
+    
+    // Auto-hide after 4 seconds
+    messageBubbleTimeouts[userId] = setTimeout(() => {
+        bubble.classList.add('fade-out');
+        setTimeout(() => {
+            if (bubble.parentElement) {
+                bubble.remove();
+            }
+        }, 500); // Wait for fade-out animation
+    }, 4000);
 }
 
 // ===== PROFILE MODAL =====
