@@ -14,7 +14,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $instagram_handle = $_POST['instagram_handle'] ?? '';
     $bio = $_POST['bio'] ?? '';
 
-    // make sure required fields are not empty
+    // make sure required fields are not empty (Might be unnecessary)
     if (empty($username) || empty($password)) {
         $_SESSION['error'] = "Username and password are required";
         header("Location: register.php");
