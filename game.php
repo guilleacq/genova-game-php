@@ -19,8 +19,6 @@ $stmt->fetch();
 $stmt->close();
 ?>
 
-<!-- Wow this code is so beautiful I love itt -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
