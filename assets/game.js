@@ -3,6 +3,7 @@
 // State management
 let players = {};
 let lastChatMessageId = 0;
+let isFirstChatLoad = true; // Skip showing bubbles on initial page load
 let isMoving = false;
 let messageBubbleTimeouts = {}; // Track active bubble timeouts per player
 
@@ -269,6 +270,13 @@ function updateChatMessages() {
 
 function checkForNewMessages(messages) {
     if (messages.length === 0) return;
+    
+    // On first load, just set the last message ID without showing bubbles
+    if (isFirstChatLoad) {
+        lastChatMessageId = Math.max(...messages.map(m => m.id));
+        isFirstChatLoad = false;
+        return;
+    }
     
     // Find new messages since last update
     const newMessages = messages.filter(msg => msg.id > lastChatMessageId);
