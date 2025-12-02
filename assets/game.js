@@ -6,7 +6,7 @@ let lastChatMessageId = 0;
 let isMoving = false;
 
 // DOM Elements
-const lobbyArea = document.getElementById('lobbyArea');
+const lobbyContainer = document.querySelector('.lobby-container');
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const sendMessageBtn = document.getElementById('sendMessageBtn');
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initializeGame() {
     // Set up event listeners
-    lobbyArea.addEventListener('click', handleLobbyClick);
+    lobbyContainer.addEventListener('click', handleLobbyClick);
     sendMessageBtn.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -63,15 +63,11 @@ function handleLobbyClick(e) {
         return; // Don't move when clicking on a player
     }
 
-    const rect = lobbyArea.getBoundingClientRect();
+    const rect = lobbyContainer.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Clamp to bounds
-    const clampedX = Math.max(25, Math.min(775, x));
-    const clampedY = Math.max(25, Math.min(575, y));
-
-    movePlayer(clampedX, clampedY);
+    movePlayer(x, y);
 }
 
 function movePlayer(x, y) {
@@ -115,7 +111,9 @@ function updateLobbyState() {
         .then(data => {
             if (data.success) {
                 updatePlayers(data.players);
-                onlineCount.textContent = data.count;
+                if (onlineCount) {
+                    onlineCount.textContent = data.count;
+                }
             }
         })
         .catch(error => console.error('Error fetching lobby state:', error));
@@ -132,7 +130,7 @@ function updatePlayers(newPlayers) {
         if (!playerElement) {
             // Create new player element
             playerElement = createPlayerElement(player);
-            lobbyArea.appendChild(playerElement);
+            lobbyContainer.appendChild(playerElement);
         } else {
             // Update existing player position (if not current user or not moving)
             if (player.id !== currentUserId || !isMoving) {

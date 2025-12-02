@@ -49,13 +49,8 @@ $stmt->close();
         <div class="main-content">
             <!-- Lobby Area (Left Side) -->
             <div class="lobby-container">
-                <div id="lobbyArea" class="lobby-area">
-                    <!-- Background will be set via CSS -->
-                    <!-- Players will be dynamically added here -->
-                </div>
-                <div class="lobby-info">
-                    <span id="onlineCount">0</span> players online
-                </div>
+                <!-- Background will be set via CSS -->
+                <!-- Players will be dynamically added here -->
             </div>
 
             <!-- Chat Panel (Right Side) -->
