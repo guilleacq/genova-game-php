@@ -480,8 +480,10 @@ function displayProfile(data) {
             ` : ''}
             ${user.instagram_handle ? `
                 <div class="profile-field">
-                    <span class="profile-label">Instagram:</span>
-                    <span class="profile-value">@${escapeHtml(user.instagram_handle)}</span>
+                <span class="profile-label">Instagram:</span>
+                    <a class="instagram-link" href="https://www.instagram.com/${escapeHtml(user.instagram_handle)}" target="_blank">
+                        <span class="profile-value">@${escapeHtml(user.instagram_handle)}</span>
+                    </a>
                 </div>
             ` : ''}
             ${user.bio ? `

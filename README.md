@@ -94,7 +94,6 @@ If no image is provided, a gradient background will be used.
 ├── update_profile_process.php  # Profile update handler
 ├── logout.php                  # Logout handler
 ├── db.php                      # Database connection
-├── profile.php                 # Redirects to game.php
 ├── database_schema.sql         # Database setup script
 ├── api/
 │   ├── get_lobby_state.php    # Returns active players

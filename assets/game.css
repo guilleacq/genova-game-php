@@ -380,6 +380,14 @@ body {
     color: #000;
 }
 
+.instagram-link {
+    text-decoration: none;
+}
+
+.instagram-link span {
+    color: #db2b5d;
+}
+
 /* Profile Modal Content */
 .profile-header {
     display: flex;
