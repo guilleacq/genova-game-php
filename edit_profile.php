@@ -157,6 +157,85 @@ $stmt->close();
             font-size: 0.85em;
             margin-top: 5px;
         }
+        .button-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .button-group input[type="submit"] {
+            margin-top: 0;
+        }
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .modal h2 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+        .modal p {
+            color: #555;
+            margin-bottom: 25px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .modal-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .modal-btn-cancel {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .modal-btn-cancel:hover {
+            background-color: #7f8c8d;
+        }
+        .modal-btn-confirm {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .modal-btn-confirm:hover {
+            background-color: #c0392b;
+        }
     </style>
 </head>
 <body>
@@ -236,10 +315,25 @@ $stmt->close();
                 <div class="color-option" style="background-color: #7f8c8d;" data-color="#7f8c8d"></div>
             </div>
 
-            <input type="submit" value="Save Changes">
+            <div class="button-group">
+                <input type="submit" value="Save Changes">
+                <button type="button" class="btn-delete" onclick="showDeleteModal()">Delete Account</button>
+            </div>
         </form>
 
         <a href="game.php" class="back-link">← Back to Lobby</a>
+    </div>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <h2>⚠️ Delete Account</h2>
+            <p>Are you sure you want to delete your account? This action is <strong>permanent</strong> and cannot be undone. All your data will be lost.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="hideDeleteModal()">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmDeleteAccount()">Yes, Delete My Account</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -288,6 +382,44 @@ $stmt->close();
                 }
             }
         });
+
+        // Delete account modal functionality
+        function showDeleteModal() {
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function hideDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideDeleteModal();
+            }
+        });
+
+        function confirmDeleteAccount() {
+            fetch('api/delete_account.php', {
+                method: 'POST',
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Your account has been deleted. Goodbye!');
+                    window.location.href = 'index.php';
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to delete account'));
+                    hideDeleteModal();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting your account.');
+                hideDeleteModal();
+            });
+        }
     </script>
 </body>
 </html>
