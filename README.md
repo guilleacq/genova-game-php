@@ -1,6 +1,22 @@
+
 # Genova Exchange Student Mini-MMO
 
 A 2D social lobby game for exchange students in Genova, Italy. Users can walk around a virtual Piazza de Ferrari, chat with others, and make friends!
+
+⚠️ **Academic Project Notice** ⚠️
+This was built in 3-4 weeks as a final project for a web development course during my Erasmus exchange in Italy. The code reflects rapid development under tight deadlines and use of AI assistance for acceleration. While it works and demonstrates core concepts (authentication, real-time features, SQL security), it's not representative of my current coding standards.
+
+**What I'd do differently:**
+- Better separation of concerns (currently one class per endpoint)
+- More organized frontend structure
+- Modern framework instead of vanilla PHP (it was a constraint of the project by the university)
+- Improved code documentation
+
+**What I learned:**
+- PHP from scratch
+- Session management & security
+- Improved my international team collaboration skills
+- Rapid prototyping under pressure
 
 ## Features
 
